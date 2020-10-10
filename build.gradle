@@ -1,0 +1,34 @@
+plugins {
+    id 'groovy'
+    id 'java'
+}
+
+configurations {
+    extraLibs
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    extraLibs 'com.github.GiantLuigi4:CreeperUtils:9283538f84'
+    extraLibs 'com.github.GiantLuigi4:Bytecode-Utils:da717a1b5c'
+
+    configurations.compile.extendsFrom(configurations.extraLibs)
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.github.lorenzopapi.FlameInstaller'
+    }
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
